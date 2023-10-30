@@ -1,52 +1,54 @@
 import React, { useState } from "react";
 
-function NewTaskForm({ categories, onTaskAdd }) {
-  const [newTask, setNewTask] = useState({
+function NewTaskForm({categories, onTaskAdd}) {
+
+  const [formData, setFormData] = useState({
     text: "",
-    category: "Food",
+    category: "Code"
   });
 
-  const categoryList = categories.map((category) => (
-    <option key={category} value={category}>
-      {category}
-    </option>
-  ));
+  const displayCategories = categories.map(category => {
+    if (category === "All") {
+      return (
+        null
+      )
+    } else {
+      return (
+        <option 
+        className="selected" 
+        key={category}
+        onClick={() => console.log(category)}>
+          {category}
+        </option>
+      )
+    }
+  })
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewTask({
-      ...newTask,
-      [name]: value,
-    });
-  };
-
-  const handleFormSubmit = (e) => {
+  function handleSubmit(e) {
     e.preventDefault();
-    // Pass the new task to the parent component for handling
-    onTaskAdd(newTask);
-    // Reset the form after submission
-    setNewTask({ text: "", category: "Food" });
-  };
+    onTaskAdd(formData);
+    setFormData({
+      text: "",
+      category: "Code"
+    })
+  }
 
   return (
-    <form className="new-task-form" onSubmit={handleFormSubmit}>
+    <form className="new-task-form" onSubmit={handleSubmit}>
       <label>
         Details
-        <input
-          type="text"
-          name="text"
-          value={newTask.text}
-          onChange={handleInputChange}
-        />
+        <input type="text" 
+        name="text" 
+        value={formData.text} 
+        onChange={e => setFormData({...formData, text: e.target.value})}/>
       </label>
       <label>
         Category
-        <select
-          name="category"
-          value={newTask.category}
-          onChange={handleInputChange}
-        >
-          {categoryList}
+        <select 
+        name="category" 
+        value={formData.category} 
+        onChange={e => setFormData({...formData, category: e.target.value})}>
+          {displayCategories}
         </select>
       </label>
       <input type="submit" value="Add task" />
